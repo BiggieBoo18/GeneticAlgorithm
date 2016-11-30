@@ -7,7 +7,7 @@ from genetic.mutation   import Mutation
 print("Start TestMutation\n")
 
 print("-initialize Mutation")
-mut = Mutation([0,1], 0.05)
+mut = Mutation([0,1], 1)
 mut.Print()
 
 print("\n-Mutation")
@@ -44,8 +44,12 @@ for i in offspring:
     i.Print()
 
 for c in range(100):
-    mutation_offspring = mut.Mutation(cross_offspring)
-    print("Mutation")
+    print("\n-Mutation")
+    print("Before")
     for i in offspring:
+        i.Print()
+    mutation_offspring = mut.Mutation(cross_offspring)
+    print("After")
+    for i in mutation_offspring:
         i.Print()
 print("\nDone!")

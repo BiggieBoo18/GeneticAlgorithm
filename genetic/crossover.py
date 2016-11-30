@@ -28,7 +28,10 @@ class Crossover(object):
             parent1[point:] = parent2[point:]
             parent2[point:] = tmp
 
-        return [parent1, parent2]
+            offspring[0].SetIndividual(parent1)
+            offspring[1].SetIndividual(parent2)
+            
+        return offspring
 
     def twoPoints(self, offspring):
         parent1 = offspring[0].ind
@@ -48,7 +51,10 @@ class Crossover(object):
             parent1[point1:point2] = parent2[point1:point2]
             parent2[point1:point2] = tmp
 
-        return [parent1, parent2]
+            offspring[0].SetIndividual(parent1)
+            offspring[1].SetIndividual(parent2)
+            
+        return offspring
 
     def randomPoints(self, offspring, randnum):
         parent1 = offspring[0].ind
@@ -64,8 +70,10 @@ class Crossover(object):
                 tmp            = parent1[point]
                 parent1[point] = parent2[point]
                 parent2[point] = tmp
-
-        return [parent1, parent2]
+            offspring[0].SetIndividual(parent1)
+            offspring[1].SetIndividual(parent2)
+            
+        return offspring
 
     def Print(self):
         print("probability: {0}".format(self.probability))

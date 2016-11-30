@@ -19,10 +19,9 @@ class Mutation(object):
         mutate_offspring = offspring
         for i in range(len(mutate_offspring)):
             if (random.random()<self.probability):
-                for j in range(len(mutate_offspring[i])):
+                for j in range(len(mutate_offspring[i].ind)):
                     if (random.random()<self.probability):
-                        mutate_offspring[i][j] = random.choice(self.dataset)
-                        print("mutation!ind:{0}".format(i))
+                        mutate_offspring[i].ind[j] = random.choice(self.dataset)
         return (mutate_offspring)
 
     def Print(self):

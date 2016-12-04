@@ -9,17 +9,25 @@ Update: 2016/11/28
 """
 
 class Individual(object):
-    def __init__(self):
-        self.ind = []   # individual
-        self.fit = 0.0  # fittness
+    def __init__(self, indid):
+        self.indid = indid # individual id
+        self.ind   = []    # individual
+        self.fit   = 0.0   # fittness
 
     def CreateIndividual(self, life, fit):
-        self.ind = life
-        self.fit = fit
+        self.ind   = life
+        self.fit   = fit
         
     def DeleteIndividual(self):
         del self.ind[:]
-        self.fit = 0.0
+        self.fit   = 0.0
+        self.indid = 0
+
+    def SetIndid(self, indid):
+        self.indid = indid
+
+    def RemoveIndid(self):
+        self.indid = 0
 
     def SetIndividual(self, life):
         self.ind = life
@@ -30,6 +38,9 @@ class Individual(object):
     def SetFitness(self, fit):
         self.fit = fit
 
+    def GetFitness(self):
+        return self.fit
+
     def RemoveFitness(self):
         self.fit = 0
 
@@ -37,5 +48,6 @@ class Individual(object):
         return calc(self.ind)
 
     def Print(self):
-        print("individual: {0}".format(self.ind))
-        print("fittness  : {0}".format(self.fit))
+        print("--individual id: {0}".format(self.indid))
+        print("  individual   : {0}".format(self.ind))
+        print("  fittness     : {0}".format(self.fit))

@@ -3,7 +3,7 @@ from main import Individual
 print("Start TestIndividual\n")
 
 print("-initialize Individual")
-ind  = Individual()
+ind  = Individual(0)
 ind.Print()
 
 print("\n-create Individual")

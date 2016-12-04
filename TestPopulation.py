@@ -12,10 +12,12 @@ def calcFit(ind):
     return sum(ind)
 life = [[1, 0, 1, 0, 0],
         [1, 1, 1, 0, 0],
-        [1, 0, 1, 1, 1]]
+        [1, 0, 1, 1, 1],
+        [1, 0, 0, 0, 0],
+        [1, 1, 1, 0, 0]]
 population = []
-for i in range(3):
-    ind  = Individual()
+for i in range(len(life)):
+    ind  = Individual(i+1)
     ind.CreateIndividual(life[i], 0)
     fit  = ind.CalcFitness(calcFit)
     ind.SetFitness(fit)
@@ -37,7 +39,7 @@ ppl.Print()
 
 print("\n-add Individual")
 life = [1, 0, 1, 0, 0]
-ind = Individual()
+ind = Individual(0)
 ind.CreateIndividual(life, 0)
 ppl = Population()
 ppl.AddIndividual(ind)

@@ -14,6 +14,7 @@ from   genetic.population import Population
 from   genetic.select     import Select
 from   genetic.crossover  import Crossover
 from   genetic.mutation   import Mutation
+from   genetic.util       import *
 
 def calcFit(ind):
     """
@@ -30,6 +31,7 @@ def main():
     parser.add_argument('--maxormin  ', dest='maxormin'     , type=str,   default="max",help='max or min')
     parser.add_argument('--esize  '  ,  dest='eliteSize'    , type=int,   default=1,    help='elite size>=0')
     parser.add_argument('--tsize  '  ,  dest='tornSize'     , type=int,   default=2,    help='tornament size>=2')
+    parser.add_argument('--ctype  '  ,  dest='cross_type'   , type=str,   default="one",help='crossover type one or two or random')
     parser.add_argument('--cprob  '  ,  dest='cross_prob'   , type=float, default=0.4,  help='crossover probability>=0.0')
     parser.add_argument('--random  ' ,  dest='randnum'      , type=int,   default=3,    help='crossover randomPoints random number>=0')
     parser.add_argument('--mprob  '  ,  dest='mutation_prob', type=float, default=0.05, help='mutation probability>=0.0')
@@ -83,7 +85,7 @@ def main():
     
     population = []
     for i in range(popcnt):
-        ind = Individual()
+        ind = Individual(i+1)
         ind.CreateIndividual(life[i], 0)
         fit = ind.CalcFitness(calcFit)
         ind.SetFitness(fit)
@@ -96,22 +98,36 @@ def main():
     select    = Select(eliteSize, tornSize)
     cross     = Crossover(cross_prob)
     mut       = Mutation(dataset, mutation_prob)
+    if   (args.cross_type == "two"):
+        cross_type = cross.twoPoints
+    elif (args.cross_type == "random"):
+        cross_type = cross.randomPoints
+    else:
+        cross_type = cross.onePoint
     
     for i in range(revo):
+        print("revolution: {0}".format(i))
         elite     = select.SelectElite(ppl)
         next_gene = elite
         while (len(next_gene)<popcnt):
             offspring = select.SelectTornament(ppl)
-            cross_offspring    = cross.twoPoints(offspring)
+            if (args.cross_type == "random"):
+                cross_offspring    = cross_type(offspring, randnum)
+            else:
+                cross_offspring    = cross_type(offspring)
             mutation_offspring = mut.Mutation(cross_offspring)
             for j in range(len(mutation_offspring)):
                 fit = mutation_offspring[j].CalcFitness(calcFit)
                 mutation_offspring[j].SetFitness(fit)
                 next_gene.append(mutation_offspring[j])
+            
         ppl.CreatePopulation(next_gene)
         ppl.SortInFitness(maxormin)
 
-    ppl.Print()
+    PrintIndOfPopulation(ppl)
+    print "BestFit   :", GetBestFitnessOfPopulation(ppl)
+    print "WorstFit  :", GetWorstFitnessOfPopulation(ppl)
+    print "AverageFit:", GetAverageFitnessOfPopulation(ppl)
 
 if __name__ == "__main__":
     main()

@@ -28,8 +28,9 @@ class Select(object):
     def SelectTornament(self, population):
         offspring = []
         for i in range(2):
-            sample    = random.sample(population.population[self.eliteSize+1:], self.tornSize)
+            sample = random.sample(population.population[self.eliteSize+1:], self.tornSize)
             offspring.append(max(sample, key=sample.index))
+
         return offspring
 
     def Print(self):

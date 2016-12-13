@@ -18,6 +18,7 @@ class Crossover(object):
         parent1 = offspring[0].ind
         parent2 = offspring[1].ind
         if (random.random()<self.probability):
+            #print("<DEBUG> crossover")
             point   = 0
             if (len(parent1)<len(parent2)):
                 point = random.randint(0, len(parent1)-1)
@@ -37,6 +38,7 @@ class Crossover(object):
         parent1 = offspring[0].ind
         parent2 = offspring[1].ind
         if (random.random()<self.probability):
+            #print("<DEBUG> crossover")
             point1  = 0
             point2  = 0
             if (len(parent1)<len(parent2)):
@@ -60,6 +62,7 @@ class Crossover(object):
         parent1 = offspring[0].ind
         parent2 = offspring[1].ind
         if (random.random()<self.probability):
+            #print("<DEBUG> crossover")
             point  = 0
             for i in range(randnum):
                 if (len(parent1)<len(parent2)):

@@ -9,6 +9,8 @@ Update: 2016/11/28
 """
 
 import random
+from   individual import Individual
+from   util       import *
 
 class Select(object):
     def __init__(self, eliteSize=1, tornSize=2):
@@ -22,15 +24,27 @@ class Select(object):
         self.tornSize = tornSize
 
     def SelectElite(self, population):
-        elite = population.population[0:self.eliteSize+1]
+        elite = []
+        elite_gene = population.population[0:self.eliteSize+1]
+        for i in elite_gene:
+            ind = Individual(i.GetIndid())
+            ind.CreateIndividual(i.GetIndividual(), i.GetFitness())
+            elite.append(ind)
         return elite
 
     def SelectTornament(self, population):
-        offspring = []
+        offspring      = []
+        offspring_gene = []
         for i in range(2):
             sample = random.sample(population.population[self.eliteSize+1:], self.tornSize)
-            offspring.append(max(sample, key=sample.index))
+            #print("<DEBUG> sample is")
+            #PrintIndOfList(sample)
+            offspring_gene.append(max(sample, key=(lambda x:x.fit)))
 
+        for i in offspring_gene:
+            ind = Individual(i.GetIndid())
+            ind.CreateIndividual(i.GetIndividual(), 0)
+            offspring.append(ind)
         return offspring
 
     def Print(self):

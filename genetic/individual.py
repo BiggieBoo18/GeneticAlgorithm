@@ -26,12 +26,18 @@ class Individual(object):
     def SetIndid(self, indid):
         self.indid = indid
 
+    def GetIndid(self):
+        return self.indid
+
     def RemoveIndid(self):
         self.indid = 0
 
     def SetIndividual(self, life):
         self.ind = life
     
+    def GetIndividual(self):
+        return self.ind
+
     def RemoveIndividual(self):
         del self.ind[:]
 
@@ -48,6 +54,6 @@ class Individual(object):
         return calc(self.ind)
 
     def Print(self):
-        print("--individual id: {0}".format(self.indid))
-        print("  individual   : {0}".format(self.ind))
-        print("  fittness     : {0}".format(self.fit))
+        print("--individual id: <{0}>".format(self.indid))
+        print("  individual   :  {0}".format(self.ind))
+        print("  fittness     :  {0}".format(self.fit))

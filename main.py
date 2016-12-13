@@ -9,6 +9,7 @@ Update: 2016/11/29
 """
 import argparse
 import random
+import matplotlib.pyplot  as     plt
 from   genetic.individual import Individual
 from   genetic.population import Population
 from   genetic.select     import Select
@@ -32,11 +33,12 @@ def main():
     parser.add_argument('--esize  '  ,  dest='eliteSize'    , type=int,   default=1,    help='elite size>=0')
     parser.add_argument('--tsize  '  ,  dest='tornSize'     , type=int,   default=2,    help='tornament size>=2')
     parser.add_argument('--ctype  '  ,  dest='cross_type'   , type=str,   default="one",help='crossover type one or two or random')
-    parser.add_argument('--cprob  '  ,  dest='cross_prob'   , type=float, default=0.4,  help='crossover probability>=0.0')
+    parser.add_argument('--cprob  '  ,  dest='cross_prob'   , type=float, default=0.6,  help='crossover probability>=0.0')
     parser.add_argument('--random  ' ,  dest='randnum'      , type=int,   default=3,    help='crossover randomPoints random number>=0')
     parser.add_argument('--mprob  '  ,  dest='mutation_prob', type=float, default=0.05, help='mutation probability>=0.0')
     parser.add_argument('--dataset  ',  dest='dataset'      , type=str,   default="",   help='dataset file path')
     parser.add_argument('--dtype  '  ,  dest='dtype'        , type=str,   default="int",help='dataset type string or integer or float')
+    parser.add_argument('--graph  '  ,  dest='graph'        , type=int,   default=0,    help='show graph > 0')
     args = parser.parse_args()
     if (args.revo         <0   or 
         args.popcnt       <0   or 
@@ -47,8 +49,9 @@ def main():
         args.cross_prob   <0.0 or 
         args.randnum      <0   or 
         args.mutation_prob<0.0 or 
-        args.dataset== ""      or
-        args.dtype  == ""):
+        args.dataset     == "" or
+        args.dtype       == "" or
+        args.graph        <0):
         print("argment parse Error!")
         exit()
 
@@ -105,29 +108,63 @@ def main():
     else:
         cross_type = cross.onePoint
     
+    if (args.graph>0):
+        count    = []
+        bestfit  = []
+        worstfit = []
+        avefit   = []
     for i in range(revo):
         print("revolution: {0}".format(i))
+        #print("<DEBUG>ppl is")
+        #PrintIndOfPopulation(ppl)
         elite     = select.SelectElite(ppl)
         next_gene = elite
+        #print("<DEBUG>elite is")
+        #PrintIndOfList(next_gene)
         while (len(next_gene)<popcnt):
             offspring = select.SelectTornament(ppl)
+            #print("<DEBUG>select is")
+            #PrintIndOfList(offspring)
             if (args.cross_type == "random"):
                 cross_offspring    = cross_type(offspring, randnum)
+                #print("<DEBUG>crossover is")
+                #PrintIndOfList(cross_offspring)
             else:
                 cross_offspring    = cross_type(offspring)
+                #print("<DEBUG>crossover is")
+                #PrintIndOfList(cross_offspring)
             mutation_offspring = mut.Mutation(cross_offspring)
             for j in range(len(mutation_offspring)):
                 fit = mutation_offspring[j].CalcFitness(calcFit)
                 mutation_offspring[j].SetFitness(fit)
                 next_gene.append(mutation_offspring[j])
+            #print("<DEBUG>mutation is")
+            #PrintIndOfList(mutation_offspring)
             
         ppl.CreatePopulation(next_gene)
         ppl.SortInFitness(maxormin)
+        if (args.graph>0):
+            if ((i%100)==0):
+                count.append(i)
+                bestfit.append(GetBestFitnessOfPopulation(ppl))
+                worstfit.append(GetWorstFitnessOfPopulation(ppl))
+                avefit.append(GetAverageFitnessOfPopulation(ppl))
 
-    PrintIndOfPopulation(ppl)
     print "BestFit   :", GetBestFitnessOfPopulation(ppl)
     print "WorstFit  :", GetWorstFitnessOfPopulation(ppl)
     print "AverageFit:", GetAverageFitnessOfPopulation(ppl)
-
+    if (args.graph>0):
+        plt.title("Fittness")
+        p1 = plt.plot(count, bestfit , linewidth=2)
+        p2 = plt.plot(count, worstfit, linewidth=2, linestyle="dashed")
+        p3 = plt.plot(count, avefit  , linewidth=2, linestyle="dashdot")
+        plt.legend((p1[0], p2[0], p3[0]), ("Best", "Worst", "Average"), loc=2)
+        plt.show()
+        left    = [i+1 for i in range(GetWorstFitnessOfPopulation(ppl), GetBestFitnessOfPopulation(ppl)+1)]
+        height  = GetAllFitnessAsList(ppl)
+        height  = [height.count(i) for i in left]
+        plt.title("Population")
+        plt.bar(left, height, align="center")
+        plt.show()
 if __name__ == "__main__":
     main()

@@ -1,9 +1,3 @@
-from   genetic.individual import Individual
-from   genetic.population import Population
-from   genetic.select     import Select
-from   genetic.crossover  import Crossover
-from   genetic.mutation   import Mutation
-
 def PrintIndOfPopulation(ppl):
     for i in ppl.population:
     	i.Print()
@@ -23,3 +17,9 @@ def GetAverageFitnessOfPopulation(ppl):
     for i in ppl.population:
         totalfit += i.fit
     return totalfit/len(ppl.population)
+
+def GetAllFitnessAsList(ppl):
+    fitlist = []
+    for i in ppl.population:
+        fitlist.append(i.fit)
+    return fitlist

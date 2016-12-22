@@ -50,8 +50,8 @@ class Individual(object):
     def RemoveFitness(self):
         self.fit = 0
 
-    def CalcFitness(self, calc):
-        return calc(self.ind)
+    def CalcFitness(self, calc, args):
+        return calc(args)
 
     def Print(self):
         print("--individual id: <{0}>".format(self.indid))

@@ -6,10 +6,9 @@ from genetic.crossover  import Crossover
 print("Start TestCrossover\n")
 
 print("-initialize Crossover")
-cross = Crossover(0.4)
+cross = Crossover(1)
 print(cross)
 
-print("\n-onePoint")
 def calcFit(ind):
     return sum(ind)
 life = [[1, 0, 1, 0, 0],
@@ -20,9 +19,9 @@ life = [[1, 0, 1, 0, 0],
 
 population = []
 for i in range(len(life)):
-    ind  = Individual()
+    ind  = Individual(0)
     ind.CreateIndividual(life[i], 0)
-    fit  = ind.CalcFitness(calcFit)
+    fit  = ind.CalcFitness(calcFit, ind.ind)
     ind.SetFitness(fit)
     population.append(ind)
 
@@ -56,7 +55,7 @@ print("Before")
 for i in offspring:
     i.Print()
 print("After")
-cross_offspring = cross.randomPoints(offspring, 3)
+cross_offspring = cross.randomPoints(offspring)
 for i in cross_offspring:
     i.Print()
 

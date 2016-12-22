@@ -5,10 +5,11 @@ GA(Genetic Algorithm, 遺伝的アルゴリズム)
 Main Class
 
 Create: 2016/11/27
-Update: 2016/11/29
+Update: 2016/12/18
 """
 import argparse
 import random
+import copy
 import matplotlib.pyplot  as     plt
 from   genetic.individual import Individual
 from   genetic.population import Population
@@ -34,11 +35,14 @@ def main():
     parser.add_argument('--tsize  '  ,  dest='tornSize'     , type=int,   default=2,    help='tornament size>=2')
     parser.add_argument('--ctype  '  ,  dest='cross_type'   , type=str,   default="one",help='crossover type one or two or random')
     parser.add_argument('--cprob  '  ,  dest='cross_prob'   , type=float, default=0.6,  help='crossover probability>=0.0')
-    parser.add_argument('--random  ' ,  dest='randnum'      , type=int,   default=3,    help='crossover randomPoints random number>=0')
     parser.add_argument('--mprob  '  ,  dest='mutation_prob', type=float, default=0.05, help='mutation probability>=0.0')
     parser.add_argument('--dataset  ',  dest='dataset'      , type=str,   default="",   help='dataset file path')
     parser.add_argument('--dtype  '  ,  dest='dtype'        , type=str,   default="int",help='dataset type string or integer or float')
     parser.add_argument('--graph  '  ,  dest='graph'        , type=int,   default=0,    help='show graph > 0')
+
+    """
+    setup argment
+    """
     args = parser.parse_args()
     if (args.revo         <0   or 
         args.popcnt       <0   or 
@@ -47,7 +51,6 @@ def main():
         args.eliteSize    <0   or 
         args.tornSize     <2   or 
         args.cross_prob   <0.0 or 
-        args.randnum      <0   or 
         args.mutation_prob<0.0 or 
         args.dataset     == "" or
         args.dtype       == "" or
@@ -62,7 +65,6 @@ def main():
     eliteSize     = args.eliteSize
     tornSize      = args.tornSize
     cross_prob    = args.cross_prob
-    randnum       = args.randnum
     mutation_prob = args.mutation_prob
     
     fd      = open(args.dataset, "r")
@@ -79,18 +81,21 @@ def main():
         tmp = i.strip("\n")
         dataset.append(dtype(tmp.strip("\r")))
 
+    """
+    init population
+    """
     life = []
     for i in range(popcnt):
         g = []
         for j in range(gene):
             g.append(random.choice(dataset))
         life.append(g)
-    
+
     population = []
     for i in range(popcnt):
         ind = Individual(i+1)
         ind.CreateIndividual(life[i], 0)
-        fit = ind.CalcFitness(calcFit)
+        fit = ind.CalcFitness(calcFit, ind.ind)
         ind.SetFitness(fit)
         population.append(ind)
 
@@ -113,42 +118,81 @@ def main():
         bestfit  = []
         worstfit = []
         avefit   = []
+
+    """
+    revolution
+    """
     for i in range(revo):
         print("revolution: {0}".format(i))
         #print("<DEBUG>ppl is")
         #PrintIndOfPopulation(ppl)
+        # select
+        """
+        select elite from population
+        """
         elite     = select.SelectElite(ppl)
         next_gene = elite
         #print("<DEBUG>elite is")
         #PrintIndOfList(next_gene)
         while (len(next_gene)<popcnt):
-            offspring = select.SelectTornament(ppl)
+            """
+            select offspring from population (tornament)
+            """
+            pplc      = copy.deepcopy(ppl)
+            offspring = select.SelectTornament(pplc)
             #print("<DEBUG>select is")
-            #PrintIndOfList(offspring)
+            #for j in range(len(offspring)):
+                #fit = offspring[j].CalcFitness(calcFit, offspring[j].ind)
+                #offspring[j].SetFitness(fit)
+            
+            #print PrintIndOfList(offspring)
+            """
+            crossover from offspring
+            """
             if (args.cross_type == "random"):
-                cross_offspring    = cross_type(offspring, randnum)
+                cross_offspring    = cross_type(offspring)
                 #print("<DEBUG>crossover is")
                 #PrintIndOfList(cross_offspring)
             else:
                 cross_offspring    = cross_type(offspring)
                 #print("<DEBUG>crossover is")
                 #PrintIndOfList(cross_offspring)
+
+            """
+            mutation from offspring
+            """
             mutation_offspring = mut.Mutation(cross_offspring)
-            for j in range(len(mutation_offspring)):
-                fit = mutation_offspring[j].CalcFitness(calcFit)
-                mutation_offspring[j].SetFitness(fit)
-                next_gene.append(mutation_offspring[j])
             #print("<DEBUG>mutation is")
             #PrintIndOfList(mutation_offspring)
+            for j in range(len(mutation_offspring)):
+                fit = mutation_offspring[j].CalcFitness(calcFit, mutation_offspring[j].ind)
+                mutation_offspring[j].SetFitness(fit)
+                next_gene.append(mutation_offspring[j])
+            #print("<DEBUG>next_gene is")
+            #PrintIndOfList(next_gene)
             
+        """
+        create new population
+        """
         ppl.CreatePopulation(next_gene)
         ppl.SortInFitness(maxormin)
+        #print("<DEBUG>ppl is")
+        #PrintIndOfPopulation(ppl)
+
         if (args.graph>0):
-            if ((i%100)==0):
+            if ((i%1)==0):
                 count.append(i)
                 bestfit.append(GetBestFitnessOfPopulation(ppl))
                 worstfit.append(GetWorstFitnessOfPopulation(ppl))
                 avefit.append(GetAverageFitnessOfPopulation(ppl))
+                #DEBUG
+                left    = [i+1 for i in range(GetWorstFitnessOfPopulation(ppl), GetBestFitnessOfPopulation(ppl)+1)]
+                height  = GetAllFitnessAsList(ppl)
+                height  = [height.count(i) for i in left]
+                plt.title("Population")
+                plt.bar(left, height, align="center")
+                plt.show()
+
 
     print "BestFit   :", GetBestFitnessOfPopulation(ppl)
     print "WorstFit  :", GetWorstFitnessOfPopulation(ppl)

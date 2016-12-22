@@ -21,9 +21,9 @@ life = [[1, 0, 1, 0, 0],
 
 population = []
 for i in range(len(life)):
-    ind  = Individual()
+    ind  = Individual(0)
     ind.CreateIndividual(life[i], 0)
-    fit  = ind.CalcFitness(calcFit)
+    fit  = ind.CalcFitness(calcFit, ind.ind)
     ind.SetFitness(fit)
     population.append(ind)
 

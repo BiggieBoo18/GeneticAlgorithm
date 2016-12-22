@@ -19,7 +19,7 @@ population = []
 for i in range(len(life)):
     ind  = Individual(i+1)
     ind.CreateIndividual(life[i], 0)
-    fit  = ind.CalcFitness(calcFit)
+    fit  = ind.CalcFitness(calcFit, ind.ind)
     ind.SetFitness(fit)
     population.append(ind)
 
@@ -46,7 +46,7 @@ ppl.AddIndividual(ind)
 ppl.Print()
 
 print("\n-remove Individual in num")
-ppl.RemoveIndividualInNum(0)
+ppl.RemoveIndividualByNum(0)
 ppl.Print()
 
 print("\nDone!")

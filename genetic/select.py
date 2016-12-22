@@ -5,7 +5,7 @@ GA(Genetic Algorithm, 遺伝的アルゴリズム)
 Select Class <Elite&Tournament>
 
 Create: 2016/11/28
-Update: 2016/11/28
+Update: 2016/12/18
 """
 
 import random
@@ -25,7 +25,7 @@ class Select(object):
 
     def SelectElite(self, population):
         elite = []
-        elite_gene = population.population[0:self.eliteSize+1]
+        elite_gene = population.population[0:self.eliteSize]
         for i in elite_gene:
             ind = Individual(i.GetIndid())
             ind.CreateIndividual(i.GetIndividual(), i.GetFitness())
@@ -36,7 +36,7 @@ class Select(object):
         offspring      = []
         offspring_gene = []
         for i in range(2):
-            sample = random.sample(population.population[self.eliteSize+1:], self.tornSize)
+            sample = random.sample(population.population[self.eliteSize:], self.tornSize)
             #print("<DEBUG> sample is")
             #PrintIndOfList(sample)
             offspring_gene.append(max(sample, key=(lambda x:x.fit)))

@@ -41,7 +41,7 @@ ind.CreateIndividual(life, fit)
 ind.Print()
 def calcFit(ind):
     return sum(ind)
-fit  = ind.CalcFitness(calcFit)
+fit  = ind.CalcFitness(calcFit, ind.ind)
 ind.SetFitness(fit)
 ind.Print()
 

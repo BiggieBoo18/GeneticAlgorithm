@@ -21,7 +21,7 @@ class Population(object):
     def AddIndividual(self, ind):
         self.population.append(ind)
 
-    def RemoveIndividualInNum(self, num):
+    def RemoveIndividualByNum(self, num):
         del self.population[num]
 
     def SortInFitness(self, maxormin="max"):
